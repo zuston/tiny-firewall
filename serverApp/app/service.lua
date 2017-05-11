@@ -1,5 +1,7 @@
 local meta = require "meta"
 local cjson = require "cjson"
+local error = require "error"
+
 local _M = {
 
 }
@@ -12,20 +14,23 @@ local method = meta.method
 local uri = meta.uri
 local args = meta.args
 
+local ttime = (os.date("%Y-%m-%d %H:%M:%S",time))
+
 function _M.insertLog(mysqlInstance)
   if uri == "/favicon.ico" then
-    return -1
+    return error["IGNORED"]
   end
 
   local sql =
   string.format("insert into log(ip,user_agent,referer,time,method,uri,args) values(\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')",
-  ip,user_agent,referer,time,method,uri,cjson.encode(args))
+  ip,user_agent,referer,ttime,method,uri,cjson.encode(args))
 
   local res, err, errcode, sqlstate = mysqlInstance:query(sql)
   if not err then
-    return 1
+    return error["DBSUCCESS"]
+  else
+    return error["DBERROR"]
   end
-  return 0
 end
 
 -- ip+BL is key
@@ -33,28 +38,30 @@ end
 -- limited_type (0,1,2) 分别代表　分钟，天数，永久
 -- frequency 的值代表限制访问的次数
 function _M.isIpInBlackList(mysqlInstance,redisInstance)
-  local sql = string.format("select count(*) as count,* where ip = %s from blacklist limit 1",ip)
-  local res,err,errcode,sqlstate = mysqlInstance.query(sql)
-  if err then
+  local sql = string.format("select count(*) as count from blacklist where ip = \'%s\' ",ip)
+  local res,err,errcode,sqlstate = mysqlInstance:query(sql)
+  if not res then
     -- execute sql error
-    return -1
+    return error["DBERROR"]
   else
-    if res[1]["count"]==0 then
-      return 1
+    if tonumber(res[1]["count"])==0 then
+      return error["OK"]
     else
+      local sql = string.format("select * from blacklist where ip = \'%s\' ",ip)
+      local res,err,errcode,sqlstate = mysqlInstance:query(sql)
+
       local blacklistKey = ip.."BL"
       local limited_type = res[1]["limited_type"]
       local frequency = res[1]["frequency"]
       local redisRes,redisErr = redisInstance:get(blacklistKey)
 
-      if frequency==2 then
+      if limited_type==2 then
         --body...
         -- 直接封禁
-        return 3
+        return error["NOTALLOWED"]
       end
 
       if redisRes==ngx.null then
-
         local limitedVisitedTime = 60
         if limited_type==0 then
           limitedVisitedTime = 60
@@ -63,27 +70,45 @@ function _M.isIpInBlackList(mysqlInstance,redisInstance)
         else
           limitedVisitedTime = -1
         end
-        redisInstance.set(blacklistKey,1)
+        redisInstance:set(blacklistKey,1)
         if limitedVisitedTime~=-1 then
-          redisInstance.expire(blacklistKey,limitedVisitedTime)
+          redisInstance:expire(blacklistKey,limitedVisitedTime)
         end
 
+        return error["OK"]
+
       else
+        -- 如果热更新，直接清空当前blacklist指定ip
         -- 数据存在的情况，判断是否限制次数超过限定值
         -- todo
-        --
-        local tempVisitTime = tonumber(redisRes)
-        if tempVisitTime >= frequency then
-            return 3
+        local tempVisitCount = tonumber(redisRes)
+
+        if tempVisitCount == frequency then
+            return error["VISITEDMUCH"]
         else
-            redisInstance.set(blacklistKey,tempVisitTime+1)
-            return 1
+            redisInstance:incr(blacklistKey)
+            return error["OK"]
         end
-        
+
       end
 
     end
   end
+end
+
+-- api 的开放热部署
+function _M.isApiOpen()
+  return
+end
+
+-- user_agent 的开放热部署
+function _M.isUserAgentOpen()
+  return
+end
+
+-- 忽略指定uri ip
+local function isIgnore()
+  return
 end
 
 

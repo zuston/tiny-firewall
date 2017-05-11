@@ -9,7 +9,7 @@ local user_agent = header["User-Agent"]
 local referer = header["Referer"]
 
 
-local arrive_time = ngx.now()
+local arrive_time = ngx.time()
 
 local req_method = ngx.req.get_method()
 
