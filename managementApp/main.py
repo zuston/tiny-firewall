@@ -9,18 +9,18 @@ from flask import abort, redirect, url_for, session
 
 from service import baseService as bs
 
-app = Flask(__name__)
+app = Flask(__name__,static_folder='TFstatic')
 
-@app.route("/login")
+@app.route("/tf/login")
 def login():
     return render_template("login.html")
 
-@app.route("/logout")
+@app.route("/tf/logout")
 def logout():
     session.pop("managementUser",None)
     return redirect(url_for("login"))
 
-@app.route("/loginDo",methods=["POST","GET"])
+@app.route("/tf/loginDo",methods=["POST","GET"])
 def loginDo():
     username = request.form.get("username")
     pwd = request.form.get("pwd")
@@ -30,7 +30,7 @@ def loginDo():
     else:
         return render_template("login.html",error="please check your username and pwd")
 
-@app.route("/index/<int:count>/<int:page>")
+@app.route("/tf/index/<int:count>/<int:page>")
 def index(count,page):
     if "managementUser" in session:
         userInfo = session["managementUser"]
@@ -40,7 +40,7 @@ def index(count,page):
     else:
         return redirect(url_for("login"))
 
-@app.route("/black")
+@app.route("/tf/black")
 def black():
     if "managementUser" in session:
         userInfo = session["managementUser"]
@@ -49,7 +49,7 @@ def black():
     else:
         return redirect(url_for("login"))
 
-@app.route("/black/modify/<string:ip>",methods=["POST"])
+@app.route("/tf/black/modify/<string:ip>",methods=["POST"])
 def blackModify(ip):
     frequency = request.form.get("frequency")
     limited_type = request.form.get("limitedType")
@@ -59,17 +59,17 @@ def blackModify(ip):
     return redirect(url_for("black"))
 
 
-@app.route("/black/delete/<string:ip>")
+@app.route("/tf/black/delete/<string:ip>")
 def blackDelete(ip):
     bs.blackDelete(ip)
     return redirect(url_for("black"))
 
-@app.route("/black/ban/<string:ip>")
+@app.route("/tf/black/ban/<string:ip>")
 def blackBan(ip):
     bs.blackBan(ip)
     return redirect(url_for("black"))
 
-@app.route("/black/add",methods=["POST"])
+@app.route("/tf/black/add",methods=["POST"])
 def blackAdd():
     ip = request.form.get("ip")
     frequency = request.form.get("frequency")
@@ -87,7 +87,7 @@ def blackAdd():
             return redirect(url_for("login"))
     return redirect(url_for("black"))
 
-@app.route("/setting")
+@app.route("/tf/setting")
 def setting():
     if "managementUser" in session:
         name = session["managementUser"]
@@ -97,14 +97,14 @@ def setting():
         return redirect(url_for("login"))
 
 
-@app.route("/setting/updatePwd",methods=["POST"])
+@app.route("/tf/setting/updatePwd",methods=["POST"])
 def updatePwd():
     username = request.form.get("username")
     pwd = request.form.get("pwd")
     bs.updatePwd(username,pwd)
     return redirect(url_for("setting"))
 
-@app.route("/anay")
+@app.route("/tf/anay")
 def anay():
     if "managementUser" in session:
         userInfo = session["managementUser"]
@@ -114,7 +114,7 @@ def anay():
         return redirect(url_for("login"))
 
 
-@app.route("/test")
+@app.route("/tf/test")
 def test():
     return render_template("black.html")
 

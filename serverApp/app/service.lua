@@ -84,6 +84,8 @@ function _M.isIpInBlackList(mysqlInstance,redisInstance)
         local tempVisitCount = tonumber(redisRes)
 
         if tempVisitCount == frequency then
+            -- return error["OK"]
+
             return error["VISITEDMUCH"]
         else
             redisInstance:incr(blacklistKey)

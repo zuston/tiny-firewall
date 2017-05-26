@@ -12,16 +12,16 @@
     <title>tiny-firewall</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/TFstatic/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="/static/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="/TFstatic/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="/static/dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="/TFstatic/dist/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="/static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/TFstatic/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -51,7 +51,7 @@
             <!-- 导航栏头部 -->
             <ul class="nav navbar-top-links navbar-right">
                 <li><i class="fa fa-user fa-fw"></i>admin</li>
-                <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> 退出</a></li>
+                <li><a href="/tf/logout"><i class="fa fa-sign-out fa-fw"></i> 退出</a></li>
                 </li>
                 <!-- /.dropdown -->
             </ul>
@@ -62,17 +62,17 @@
                     <!--search不用注释掉-->
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="/index/20/1"><i class="fa fa-home fa-fw"></i>主页</a>
+                            <a href="/tf/index/20/1"><i class="fa fa-home fa-fw"></i>主页</a>
                         </li>
                         <li>
-                            <a href="/black"><i class="fa fa-user fa-fw"></i>黑名单</a>
+                            <a href="/tf/black"><i class="fa fa-user fa-fw"></i>黑名单</a>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="/anay"><i class="fa fa-table fa-fw"></i> 统计</a>
+                            <a href="/tf/anay"><i class="fa fa-table fa-fw"></i> 统计</a>
                         </li>
                         <li>
-                            <a href="/setting"><i class="fa fa-edit fa-fw"></i>设置</a>
+                            <a href="/tf/setting"><i class="fa fa-edit fa-fw"></i>设置</a>
                         </li>
                     </ul>
                 </div>
@@ -109,7 +109,7 @@
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                         <h4 class="modal-title" id="myModalLabel">Add</h4>
                                     </div>
-                                    <form class="" action="/black/add" method="post">
+                                    <form class="" action="/tf/black/add" method="post">
                                     <div class="modal-body">
                                       <div class="form-group">
                                         <input type="text" class="form-control" name="ip" value="127.0.0.1">
@@ -162,8 +162,8 @@
                                             <td>{{value.frequency}}</td>
                                             <td>
                                               <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#teacher{{loop.index}}-A">modify</button>
-                                              <a href="/black/delete/{{value.ip}}"><button class="btn btn-default btn-sm" data-toggle="modal" data-target="#teacher{{loop.index}}-B">delete</button></a>
-                                              <a href="/black/ban/{{value.ip}}"><button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#teacher{{loop.index}}-C">BAN</button></a>
+                                              <a href="/tf/black/delete/{{value.ip}}"><button class="btn btn-default btn-sm" data-toggle="modal" data-target="#teacher{{loop.index}}-B">delete</button></a>
+                                              <a href="/tf/black/ban/{{value.ip}}"><button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#teacher{{loop.index}}-C">BAN</button></a>
 
                                             </td>
                                             <!-- Modal -->
@@ -174,7 +174,7 @@
                                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                                             <h4 class="modal-title" id="myModalLabel">修改 <a href="#">{{value.ip}}</a> 访问限制</h4>
                                                         </div>
-                                                        <form class="" action="/black/modify/{{value.ip}}" method="post">
+                                                        <form class="" action="/tf/black/modify/{{value.ip}}" method="post">
                                                         <div class="modal-body">
                                                           <div class="form-group">
                                                             <label class="checkbox-inline">
@@ -218,16 +218,16 @@
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/TFstatic/vendor/jquery/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/TFstatic/vendor/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="/static/vendor/metisMenu/metisMenu.min.js"></script>
+    <script src="/TFstatic/vendor/metisMenu/metisMenu.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="/static/dist/js/sb-admin-2.js"></script>
+    <script src="/TFstatic/dist/js/sb-admin-2.js"></script>
 
 </body>
 

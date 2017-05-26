@@ -29,7 +29,7 @@ function _M.newMysql()
                     port = 3306,
                     database = "tinyFirewall",
                     user = "root",
-                    password = "zuston",
+                    password = "",
                     max_packet_size = 1024 * 1024 }
 
   if not ok then
