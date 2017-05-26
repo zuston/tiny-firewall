@@ -11,6 +11,34 @@ from service import baseService as bs
 
 app = Flask(__name__,static_folder='TFstatic')
 
+def TTindex(count,page):
+    if "managementUser" in session:
+        userInfo = session["managementUser"]
+        logList,sumPage = bs.getLogList(count,(page-1)*count)
+
+        return render_template("index.html",userInfo=userInfo,logList=logList,currentPage=page,sumPage=sumPage)
+    else:
+        # return redirect(url_for("login"))
+        return render_template("login.html")
+
+def TTblack():
+    if "managementUser" in session:
+        userInfo = session["managementUser"]
+        blacklist = bs.getBlackList()
+        return render_template("black.html",userInfo=userInfo,blackList=blacklist)
+    else:
+        # return redirect(url_for("login"))
+        return render_template("login.html")
+
+def TTsetting():
+    if "managementUser" in session:
+        name = session["managementUser"]
+        userInfo = bs.getUserInfo(name)
+        return render_template("setting.html",userInfo=userInfo)
+    else:
+        # return redirect(url_for("login"))
+        return render_template("login.html")
+
 @app.route("/tf/login")
 def login():
     return render_template("login.html")
@@ -18,7 +46,8 @@ def login():
 @app.route("/tf/logout")
 def logout():
     session.pop("managementUser",None)
-    return redirect(url_for("login"))
+    # return redirect(url_for("login"))
+    return render_template("login.html")
 
 @app.route("/tf/loginDo",methods=["POST","GET"])
 def loginDo():
@@ -26,7 +55,8 @@ def loginDo():
     pwd = request.form.get("pwd")
     if bs.validateLogin(username,pwd):
         session["managementUser"] = username
-        return redirect(url_for("index",count=20,page=1))
+        # return redirect(url_for("index",count=20,page=1))
+        return TTindex(20,1)
     else:
         return render_template("login.html",error="please check your username and pwd")
 
@@ -38,7 +68,8 @@ def index(count,page):
 
         return render_template("index.html",userInfo=userInfo,logList=logList,currentPage=page,sumPage=sumPage)
     else:
-        return redirect(url_for("login"))
+        # return redirect(url_for("login"))
+        return render_template("login.html")
 
 @app.route("/tf/black")
 def black():
@@ -47,7 +78,9 @@ def black():
         blacklist = bs.getBlackList()
         return render_template("black.html",userInfo=userInfo,blackList=blacklist)
     else:
-        return redirect(url_for("login"))
+        # return redirect(url_for("login"))
+        return render_template("login.html")
+
 
 @app.route("/tf/black/modify/<string:ip>",methods=["POST"])
 def blackModify(ip):
@@ -56,18 +89,23 @@ def blackModify(ip):
     print frequency,limited_type
     res = bs.blackModify(frequency,limited_type,ip)
     print res
-    return redirect(url_for("black"))
+    # return redirect(url_for("black"))
+    return TTblack()
 
 
 @app.route("/tf/black/delete/<string:ip>")
 def blackDelete(ip):
     bs.blackDelete(ip)
-    return redirect(url_for("black"))
+    # return redirect(url_for("black"))
+    return TTblack()
+
 
 @app.route("/tf/black/ban/<string:ip>")
 def blackBan(ip):
     bs.blackBan(ip)
-    return redirect(url_for("black"))
+    # return redirect(url_for("black"))
+    return TTblack()
+
 
 @app.route("/tf/black/add",methods=["POST"])
 def blackAdd():
@@ -84,8 +122,11 @@ def blackAdd():
             return render_template("black.html",userInfo=userInfo,blackList=blacklist,error=error)
 
         else:
-            return redirect(url_for("login"))
-    return redirect(url_for("black"))
+            # return redirect(url_for("login"))
+            return render_template("login.html")
+    # return redirect(url_for("black"))
+    return TTblack()
+
 
 @app.route("/tf/setting")
 def setting():
@@ -94,7 +135,9 @@ def setting():
         userInfo = bs.getUserInfo(name)
         return render_template("setting.html",userInfo=userInfo)
     else:
-        return redirect(url_for("login"))
+        # return redirect(url_for("login"))
+        return render_template("login.html")
+
 
 
 @app.route("/tf/setting/updatePwd",methods=["POST"])
@@ -102,7 +145,8 @@ def updatePwd():
     username = request.form.get("username")
     pwd = request.form.get("pwd")
     bs.updatePwd(username,pwd)
-    return redirect(url_for("setting"))
+    # return redirect(url_for("setting"))
+    return TTsetting()
 
 @app.route("/tf/anay")
 def anay():
@@ -111,7 +155,8 @@ def anay():
         return render_template("anay.html",userInfo=userInfo)
 
     else:
-        return redirect(url_for("login"))
+        # return redirect(url_for("login"))
+        return render_template("login.html")
 
 
 @app.route("/tf/test")
